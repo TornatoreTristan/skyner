@@ -1,0 +1,67 @@
+# Dependencies and AdonisJS build
+node_modules
+build
+tmp
+
+# Secrets and environment variables
+.env
+.env.local
+.env.production
+.env.production.local
+.env.development.local
+
+# API Keys - IMPORTANT: Never commit these!
+# Amadeus, Skyscanner, Kiwi.com credentials should be in .env only
+
+# Frontend assets compiled code
+public/assets
+public/hot
+
+# Uploads and storage
+storage/uploads
+storage/cache
+
+# Database
+*.sqlite
+*.sqlite3
+
+# Build tools specific
+npm-debug.log
+yarn-error.log
+yarn.lock
+pnpm-lock.yaml
+
+# Logs
+logs
+*.log
+pino-pretty
+coverage
+
+# Editors specific
+.fleet
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Platform specific
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage
+.nyc_output
+
+# TypeScript
+*.tsbuildinfo
+
+# Redis dump
+dump.rdb
+
+# Bull queue data (if using file-based persistence)
+.bull
+
+# Temporary files
+*.tmp
+*.temp
