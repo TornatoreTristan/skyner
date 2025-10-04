@@ -246,7 +246,8 @@ export abstract class BaseRepository<TModel extends LucidModel> {
 
     if (soft && this.supportsSoftDelete()) {
       // Soft delete
-      record.merge({ deleted_at: DateTime.now() } as any)
+      const deletedAtProperty = this.getDeletedAtPropertyName()
+      record.merge({ [deletedAtProperty]: DateTime.now() } as any)
       await record.save()
     } else {
       // Hard delete
@@ -280,7 +281,8 @@ export abstract class BaseRepository<TModel extends LucidModel> {
       E.notFound(this.getModelName(), id)
     }
 
-    record.merge({ deleted_at: null } as any)
+    const deletedAtProperty = this.getDeletedAtPropertyName()
+    record.merge({ [deletedAtProperty]: null } as any)
     await record.save()
 
     // Invalidation du cache
@@ -304,7 +306,8 @@ export abstract class BaseRepository<TModel extends LucidModel> {
       query.where(key, value)
     }
 
-    const count = await query.getCount()
+    const result = await query.count('* as total')
+    const count = Number(result[0]?.$extras?.total || result[0]?.total || 0)
     return count > 0
   }
 
@@ -319,7 +322,7 @@ export abstract class BaseRepository<TModel extends LucidModel> {
     }
 
     const result = await query.count('* as total')
-    return parseInt(result[0]?.total || '0')
+    return Number(result[0]?.$extras?.total || result[0]?.total || 0)
   }
 
   /**
@@ -399,7 +402,18 @@ export abstract class BaseRepository<TModel extends LucidModel> {
   protected supportsSoftDelete(): boolean {
     // Vérifier si le modèle a une colonne deleted_at dans ses colonnes définies
     const columns = (this.model as any).$columnsDefinitions
-    return columns && columns.has('deleted_at')
+    return columns && (columns.has('deleted_at') || columns.has('deletedAt'))
+  }
+
+  /**
+   * Obtenir le nom de la propriété deletedAt (deleted_at ou deletedAt selon le modèle)
+   */
+  protected getDeletedAtPropertyName(): string {
+    const columns = (this.model as any).$columnsDefinitions
+    if (columns && columns.has('deletedAt')) {
+      return 'deletedAt'
+    }
+    return 'deleted_at'
   }
 
   /**

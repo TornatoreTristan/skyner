@@ -20,6 +20,9 @@ import SessionRepository from '#sessions/repositories/session_repository'
 import EmailVerificationRepository from '#auth/repositories/email_verification_repository'
 import NotificationRepository from '#notifications/repositories/notification_repository'
 import UploadRepository from '#uploads/repositories/upload_repository'
+import DestinationRepository from '#destinations/repositories/destination_repository'
+import FlightRepository from '#flights/repositories/flight_repository'
+import PriceHistoryRepository from '#flights/repositories/price_history_repository'
 
 // Upload Services
 import StorageService from '#uploads/services/storage_service'
@@ -32,6 +35,13 @@ import SessionService from '#sessions/services/session_service'
 import GoogleAuthService from '#auth/services/google_auth_service'
 import EmailVerificationService from '#auth/services/email_verification_service'
 import NotificationService from '#notifications/services/notification_service'
+import DestinationService from '#destinations/services/destination_service'
+import FlightService from '#flights/services/flight_service'
+import FlightSearchService from '#flights/services/flight_search_service'
+import PriceHistoryService from '#flights/services/price_history_service'
+
+// External Integrations
+import AmadeusClient from '#integrations/amadeus/amadeus_client'
 
 // Create container
 const container = new Container()
@@ -87,6 +97,9 @@ export function configureContainer(): Container {
   container.bind(TYPES.EmailVerificationRepository).to(EmailVerificationRepository)
   container.bind(TYPES.NotificationRepository).to(NotificationRepository)
   container.bind(TYPES.UploadRepository).to(UploadRepository)
+  container.bind(TYPES.DestinationRepository).to(DestinationRepository)
+  container.bind(TYPES.FlightRepository).to(FlightRepository)
+  container.bind(TYPES.PriceHistoryRepository).to(PriceHistoryRepository)
 
   // ==========================================
   // DOMAIN SERVICES
@@ -96,6 +109,10 @@ export function configureContainer(): Container {
   container.bind<GoogleAuthService>(TYPES.GoogleAuthService).to(GoogleAuthService)
   container.bind<EmailVerificationService>(TYPES.EmailVerificationService).to(EmailVerificationService)
   container.bind<NotificationService>(TYPES.NotificationService).to(NotificationService)
+  container.bind<DestinationService>(TYPES.DestinationService).to(DestinationService)
+  container.bind<FlightService>(TYPES.FlightService).to(FlightService)
+  container.bind<FlightSearchService>(TYPES.FlightSearchService).to(FlightSearchService)
+  container.bind<PriceHistoryService>(TYPES.PriceHistoryService).to(PriceHistoryService)
 
   // ==========================================
   // UPLOAD SERVICES
@@ -105,6 +122,12 @@ export function configureContainer(): Container {
   container.bind<S3StorageDriver>(TYPES.S3StorageDriver).to(S3StorageDriver).inSingletonScope()
   container.bind<StorageService>(TYPES.StorageService).to(StorageService).inSingletonScope()
   container.bind<UploadService>(TYPES.UploadService).to(UploadService)
+
+  // ==========================================
+  // EXTERNAL INTEGRATIONS
+  // ==========================================
+
+  container.bind<AmadeusClient>(TYPES.AmadeusClient).to(AmadeusClient).inSingletonScope()
 
   return container
 }

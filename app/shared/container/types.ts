@@ -11,6 +11,9 @@ export const TYPES = {
   EmailVerificationRepository: Symbol.for('EmailVerificationRepository'),
   NotificationRepository: Symbol.for('NotificationRepository'),
   UploadRepository: Symbol.for('UploadRepository'),
+  DestinationRepository: Symbol.for('DestinationRepository'),
+  FlightRepository: Symbol.for('FlightRepository'),
+  PriceHistoryRepository: Symbol.for('PriceHistoryRepository'),
 
   // Services
   UserService: Symbol.for('UserService'),
@@ -25,6 +28,10 @@ export const TYPES = {
   StorageService: Symbol.for('StorageService'),
   LocalStorageDriver: Symbol.for('LocalStorageDriver'),
   S3StorageDriver: Symbol.for('S3StorageDriver'),
+  DestinationService: Symbol.for('DestinationService'),
+  FlightService: Symbol.for('FlightService'),
+  FlightSearchService: Symbol.for('FlightSearchService'),
+  PriceHistoryService: Symbol.for('PriceHistoryService'),
 
   // Infrastructure
   CacheService: Symbol.for('CacheService'),
@@ -36,6 +43,7 @@ export const TYPES = {
 
   // External services
   RedisClient: Symbol.for('RedisClient'),
+  AmadeusClient: Symbol.for('AmadeusClient'),
 } as const
 
 export type ServiceType = keyof typeof TYPES
