@@ -4,7 +4,6 @@ import { HttpContext, ExceptionHandler } from '@adonisjs/core/http'
 import type { StatusPageRange, StatusPageRenderer } from '@adonisjs/core/types/http'
 import { AppException } from '#shared/exceptions/app_exception'
 import { InternalServerException } from '#shared/exceptions/domain_exceptions'
-import { ERROR_CODES } from '#shared/constants/error_codes'
 
 export default class HttpExceptionHandler extends ExceptionHandler {
   /**
@@ -52,7 +51,9 @@ export default class HttpExceptionHandler extends ExceptionHandler {
     // Pour toutes les autres erreurs, on les wrappe en InternalServerException
     const wrappedException = new InternalServerException(
       app.inProduction ? 'Une erreur interne est survenue' : (error as Error).message,
-      this.debug ? { originalError: (error as Error).message, stack: (error as Error).stack } : undefined
+      this.debug
+        ? { originalError: (error as Error).message, stack: (error as Error).stack }
+        : undefined
     )
 
     return this.handleAppException(wrappedException, ctx)
@@ -67,8 +68,14 @@ export default class HttpExceptionHandler extends ExceptionHandler {
       this.logError(error, ctx)
     }
 
-    // Pour les requêtes Inertia, flash l'erreur et redirect back
+    // Si c'est une erreur d'authentification (401), rediriger vers login
+    if (error.status === 401) {
+      return ctx.response.redirect('/auth/login')
+    }
+
+    // Pour les requêtes Inertia
     if (ctx.request.header('X-Inertia')) {
+      // Pour les autres erreurs, flash et redirect back
       ctx.session.flash('error', error.message)
       return ctx.response.redirect().back()
     }

@@ -11,7 +11,9 @@ import './routes/destination_routes.js'
 import './routes/flight_routes.js'
 import { middleware } from './kernel.js'
 
-router.on('/').renderInertia('home')
+const HomeController = () => import('#home/controllers/home_controller')
+
+router.get('/', [HomeController, 'index']).use([middleware.auth()])
 
 // Route temporaire pour tester le middleware
 router

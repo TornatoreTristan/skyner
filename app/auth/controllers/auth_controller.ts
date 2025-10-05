@@ -45,7 +45,7 @@ export default class AuthController {
     return inertia.location('/')
   }
 
-  async login({ request, response, session }: HttpContext) {
+  async login({ request, response, session, inertia }: HttpContext) {
     // Récupérer les données du POST
     const loginData: LoginData = request.only(['email', 'password', 'remember'])
 
@@ -80,19 +80,10 @@ export default class AuthController {
     // Stocker l'ID de session pour pouvoir la fermer au logout
     session.put('session_id', userSession.id)
 
-    // Réponse standardisée de succès
-    return response.json({
-      success: true,
-      data: {
-        user: {
-          id: result.user!.id,
-          email: result.user!.email,
-        },
-      },
-    })
+    return inertia.location('/')
   }
 
-  async logout({ response, session }: HttpContext) {
+  async logout({ response, session, inertia }: HttpContext) {
     const sessionId = session.get('session_id')
 
     if (sessionId) {
@@ -102,12 +93,7 @@ export default class AuthController {
     session.forget('user_id')
     session.forget('session_id')
 
-    return response.json({
-      success: true,
-      data: {
-        message: 'Déconnecté avec succès',
-      },
-    })
+    return inertia.location('/auth/login')
   }
 
   async me({ response, user }: HttpContext) {
