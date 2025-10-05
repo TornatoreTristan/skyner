@@ -13,7 +13,7 @@
   "iconLibrary": "lucide",
   "aliases": {
     "components": "inertia/components",
-    "utils": "lib/utils",
+    "utils": "~/lib/utils",
     "ui": "inertia/components/ui",
     "lib": "lib",
     "hooks": "inertia/hooks"

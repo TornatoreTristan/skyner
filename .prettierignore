@@ -1,0 +1,2 @@
+# Exclude CSS to prevent auto-formatting of OKLCH color values
+inertia/css/app.css
