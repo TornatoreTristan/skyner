@@ -13,12 +13,11 @@ import {
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { Button } from '~/components/ui/button'
+import { Alert, AlertDescription } from '~/components/ui/alert'
+import { AlertCircle } from 'lucide-react'
 
 export default function Login() {
-  const page = usePage<SharedProps>()
-  console.log('Login page props:', JSON.stringify(page.props, null, 2))
-  console.log('Errors:', page.props.errors)
-  const { errors = {} } = page.props
+  const { errors = {}, error } = usePage<SharedProps>().props as SharedProps & { error?: string }
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -47,6 +46,12 @@ export default function Login() {
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input

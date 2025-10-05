@@ -3,6 +3,8 @@ import AuthService from '#auth/services/auth_service'
 import type { LoginData } from '#shared/types/auth'
 import SessionService from '#sessions/services/session_service'
 import { E } from '#shared/exceptions/index'
+import { registerValidator } from '#auth/validators/register_validator'
+import UserService from '#users/services/user_service'
 
 export default class AuthController {
   async showLogin({ inertia }: HttpContext) {
@@ -11,6 +13,36 @@ export default class AuthController {
 
   async showRegister({ inertia }: HttpContext) {
     return inertia.render('auth/register')
+  }
+
+  async register({ request, response, session, inertia }: HttpContext) {
+    const data = await request.validateUsing(registerValidator)
+
+    const user = await UserService.create({
+      email: data.email,
+      password: data.password,
+    })
+
+    session.put('user_id', user.id)
+
+    const utmSource = request.input('utm_source')
+    const utmMedium = request.input('utm_medium')
+    const utmCampaign = request.input('utm_campaign')
+    const referrer = request.header('referer')
+
+    const userSession = await SessionService.createSession({
+      userId: user.id,
+      ipAddress: request.ip(),
+      userAgent: request.header('user-agent') || 'Unknown',
+      referrer,
+      utmSource,
+      utmMedium,
+      utmCampaign,
+    })
+
+    session.put('session_id', userSession.id)
+
+    return inertia.location('/')
   }
 
   async login({ request, response, session }: HttpContext) {

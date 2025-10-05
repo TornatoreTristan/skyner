@@ -11,3 +11,10 @@ export interface LoginResult {
   user: User | null
   error?: string
 }
+
+export interface RegisterData {
+  fullName?: string
+  email: string
+  password: string
+  passwordConfirmation: string
+}

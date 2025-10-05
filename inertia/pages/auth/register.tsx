@@ -13,9 +13,11 @@ import {
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { Button } from '~/components/ui/button'
+import { Alert, AlertDescription } from '~/components/ui/alert'
+import { AlertCircle } from 'lucide-react'
 
 export default function Register() {
-  const { errors = {} } = usePage<SharedProps>().props
+  const { errors = {}, error } = usePage<SharedProps>().props as SharedProps & { error?: string }
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -51,6 +53,12 @@ export default function Register() {
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
             <div className="space-y-2">
               <Label htmlFor="fullName">Nom complet</Label>
               <Input

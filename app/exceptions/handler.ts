@@ -69,9 +69,7 @@ export default class HttpExceptionHandler extends ExceptionHandler {
 
     // Pour les requêtes Inertia, flash l'erreur et redirect back
     if (ctx.request.header('X-Inertia')) {
-      ctx.session.flash('errors', {
-        message: error.message,
-      })
+      ctx.session.flash('error', error.message)
       return ctx.response.redirect().back()
     }
 
@@ -88,18 +86,7 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * Gère les erreurs de validation VineJS
    */
   private handleVineError(error: any, ctx: HttpContext) {
-    const response = {
-      success: false,
-      error: {
-        message: 'Erreurs de validation',
-        code: ERROR_CODES.VALIDATION_ERROR,
-        details: {
-          fields: error.messages || {},
-        },
-      },
-    }
-
-    return ctx.response.status(422).json(response)
+    return super.handle(error, ctx)
   }
 
   /**
@@ -128,9 +115,7 @@ export default class HttpExceptionHandler extends ExceptionHandler {
 
     return (
       ctx.request.header('accept')?.includes('application/json') ||
-      ctx.request.url().startsWith('/api/') ||
-      ctx.request.url().startsWith('/auth/') ||
-      ctx.request.url().startsWith('/debug/')
+      ctx.request.url().startsWith('/api/')
     )
   }
 
@@ -138,12 +123,17 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * Vérifie si c'est une erreur VineJS
    */
   private isVineError(error: unknown): boolean {
-    return (
-      typeof error === 'object' &&
-      error !== null &&
-      'messages' in error &&
-      typeof (error as any).messages === 'object'
-    )
+    if (typeof error !== 'object' || error === null) {
+      return false
+    }
+
+    // VineJS v3 errors have messages property
+    if ('messages' in error && typeof (error as any).messages === 'object') {
+      return true
+    }
+
+    // Also check for E_VALIDATION_ERROR code
+    return 'code' in error && (error as any).code === 'E_VALIDATION_ERROR'
   }
 
   /**

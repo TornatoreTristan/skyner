@@ -8,12 +8,18 @@ const PasswordResetController = () => import('#auth/controllers/password_reset_c
 router
   .group(() => {
     router.post('/login', [AuthController, 'login'])
+    router.post('/register', [AuthController, 'register'])
     router.post('/logout', [AuthController, 'logout'])
     router.get('/login', [AuthController, 'showLogin'])
     router.get('/register', [AuthController, 'showRegister'])
   })
   .prefix('/auth')
   .use([middleware.throttle({ maxRequests: 5, windowMs: 60000 })])
+
+router.group(() => {
+  router.get('/login', [AuthController, 'showLogin'])
+  router.get('/register', [AuthController, 'showRegister'])
+})
 
 // Routes protégées (sans middleware - vous pouvez l'ajouter plus tard)
 router
