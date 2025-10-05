@@ -9,7 +9,6 @@ import {
   Button,
   Hr,
 } from '@react-email/components'
-import * as React from 'react'
 
 interface WelcomeEmailProps {
   userName: string
@@ -26,8 +25,8 @@ export default function WelcomeEmail({ userName, loginUrl }: WelcomeEmailProps) 
           <Heading style={h1}>Bienvenue {userName} ! 👋</Heading>
 
           <Text style={text}>
-            Nous sommes ravis de vous accueillir sur notre plateforme. Votre compte a été créé
-            avec succès et vous pouvez maintenant profiter de toutes nos fonctionnalités.
+            Nous sommes ravis de vous accueillir sur notre plateforme. Votre compte a été créé avec
+            succès et vous pouvez maintenant profiter de toutes nos fonctionnalités.
           </Text>
 
           <Button style={button} href={loginUrl}>
@@ -35,8 +34,8 @@ export default function WelcomeEmail({ userName, loginUrl }: WelcomeEmailProps) 
           </Button>
 
           <Text style={text}>
-            Vous pouvez vous connecter à tout moment en utilisant l'email avec lequel vous vous
-            êtes inscrit.
+            Vous pouvez vous connecter à tout moment en utilisant l'email avec lequel vous vous êtes
+            inscrit.
           </Text>
 
           <Hr style={hr} />

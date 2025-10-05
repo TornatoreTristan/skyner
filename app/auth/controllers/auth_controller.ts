@@ -5,6 +5,14 @@ import SessionService from '#sessions/services/session_service'
 import { E } from '#shared/exceptions/index'
 
 export default class AuthController {
+  async showLogin({ inertia }: HttpContext) {
+    return inertia.render('auth/login')
+  }
+
+  async showRegister({ inertia }: HttpContext) {
+    return inertia.render('auth/register')
+  }
+
   async login({ request, response, session }: HttpContext) {
     // Récupérer les données du POST
     const loginData: LoginData = request.only(['email', 'password', 'remember'])

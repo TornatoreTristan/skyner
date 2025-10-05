@@ -67,6 +67,14 @@ export default class HttpExceptionHandler extends ExceptionHandler {
       this.logError(error, ctx)
     }
 
+    // Pour les requêtes Inertia, flash l'erreur et redirect back
+    if (ctx.request.header('X-Inertia')) {
+      ctx.session.flash('errors', {
+        message: error.message,
+      })
+      return ctx.response.redirect().back()
+    }
+
     // Pour les requêtes API (JSON), retourner du JSON
     if (this.isApiRequest(ctx)) {
       return ctx.response.status(error.status).json(error.toJSON())
@@ -113,6 +121,11 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * Détermine si c'est une requête API
    */
   private isApiRequest(ctx: HttpContext): boolean {
+    // Si c'est une requête Inertia, ne pas la traiter comme une API request
+    if (ctx.request.header('X-Inertia')) {
+      return false
+    }
+
     return (
       ctx.request.header('accept')?.includes('application/json') ||
       ctx.request.url().startsWith('/api/') ||
